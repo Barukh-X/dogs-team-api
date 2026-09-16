@@ -9,13 +9,27 @@ class AuthController
 
     public function __construct()
     {
-        // TODO: obter $pdo a partir de config/database.php e passar pro Model
-        $this->usuarioModel = new Usuario($pdo);
+        $this->usuarioModel = new Usuario(ConectarDB());
     }
 
     // TODO: validar login e senha, iniciar sessão ($_SESSION['usuario_id'])
     public function login(): void
     {
+        $dados = json_decode(file_get_contents('php://input'), true);
+        $username = $dados['username'] ?? null;
+        $senha = $dados['senha'] ?? null;
+        
+        if(!$username || !$senha) {
+            http_response_code(400);
+            echo json_encode(['erro' => 'Usário ou senha inválido s']);
+            return;
+        }
+        
+        $usuario = $this->usuarioModel->buscarPorLogin($username);
+        
+        if($usuraio === null || !password_verify($usuario['senha'], $senha)) {
+            
+        }
     }
 
     // TODO: validar dados do formulário e criar usuário

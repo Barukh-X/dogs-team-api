@@ -10,8 +10,9 @@ class Materia
     }
 
     // TODO: listar matérias de um usuário
-    public function listarPorUsuario(int $usuarioId): array
+    public function listar_materias(): array
     {
+        
     }
 
     // TODO: criar matéria

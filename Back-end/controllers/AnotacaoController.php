@@ -10,8 +10,7 @@ class AnotacaoController
 
     public function __construct()
     {
-        // TODO: obter $pdo a partir de config/database.php e passar pro Model
-        $this->anotacaoModel = new Anotacao($pdo);
+        $this->anotacaoModel = new Anotacao(ConectarDB());
     }
 
     // TODO: listar anotações do usuário logado (filtro opcional por matéria/data) e retornar JSON

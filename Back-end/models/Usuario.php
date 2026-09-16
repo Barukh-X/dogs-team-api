@@ -9,9 +9,11 @@ class Usuario
         $this->pdo = $pdo;
     }
 
-    // TODO: buscar usuário por login (para autenticação)
     public function buscarPorLogin(string $login): ?array
     {
+        $stmt = $this->pdo->prepare('SELECT id, password FROM usuarios WHERE :user = usuario');
+        $stmt->execute(['']);
+        
     }
 
     // TODO: criar novo usuário (cadastro)

@@ -10,13 +10,13 @@ class MateriaController
 
     public function __construct()
     {
-        // TODO: obter $pdo a partir de config/database.php e passar pro Model
-        $this->materiaModel = new Materia($pdo);
+        $this->materiaModel = new Materia(ConectarDB());
     }
 
-    // TODO: listar matérias do usuário logado e retornar JSON
     public function listar(): void
     {
+        $this->mateiraModel->listar_materias();
+        
     }
 
     // TODO: criar matéria (POST) e retornar JSON

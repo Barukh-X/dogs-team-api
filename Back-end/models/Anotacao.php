@@ -10,7 +10,7 @@ class Anotacao
     }
 
     // TODO: listar anotações de um usuário, com filtro opcional por matéria e por data
-    public function listarPorUsuario(int $usuarioId, ?int $materiaId = null, ?string $data = null): array
+    public function listar_anotacoes(int $usuarioId, ?int $materiaId = null, ?string $data = null): array
     {
     }
 

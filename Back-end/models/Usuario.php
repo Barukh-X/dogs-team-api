@@ -11,14 +11,18 @@ class Usuario
 
     public function buscarPorLogin(string $login): ?array
     {
-        $stmt = $this->pdo->prepare('SELECT id, password FROM usuarios WHERE :user = usuario');
-        $stmt->execute(['']);
+        $stmt = $this->pdo->prepare('SELECT id, senha, isadmin FROM usuarios WHERE usuario = :user');
+        $stmt->execute(['user' => $login]);
         
+        $res_busca = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        return $res_busca ?: null;
     }
 
     // TODO: criar novo usuário (cadastro)
     public function criar(array $dados): bool
     {
+        
     }
 
     // TODO: buscar usuário por e-mail (recuperação de senha)

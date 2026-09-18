@@ -3,6 +3,7 @@
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../models/Usuario.php';
 
+
 class AuthController
 {
     private Usuario $usuarioModel;
@@ -12,7 +13,6 @@ class AuthController
         $this->usuarioModel = new Usuario(ConectarDB());
     }
 
-    // TODO: validar login e senha, iniciar sessão ($_SESSION['usuario_id'])
     public function login(): void
     {
         $dados = json_decode(file_get_contents('php://input'), true);
@@ -21,20 +21,36 @@ class AuthController
         
         if(!$username || !$senha) {
             http_response_code(400);
-            echo json_encode(['erro' => 'Usário ou senha inválido s']);
+            echo json_encode(['erro' => 'Usuário e senha são obrigatórios']);
             return;
         }
         
         $usuario = $this->usuarioModel->buscarPorLogin($username);
         
-        if($usuraio === null || !password_verify($usuario['senha'], $senha)) {
-            
+        if($usuario === null || !password_verify($senha, $usuario['senha'])) {
+            http_response_code(401);
+            echo json_encode(['erro' => 'Usuário ou senha inválidos']);
+            return;
         }
+        
+        if(session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        $_SESSION['id'] = $usuario['id'];
+        $_SESSION['isadmin'] = $usuario['isadmin'];
     }
 
     // TODO: validar dados do formulário e criar usuário
     public function cadastrar(): void
     {
+        $dados = json_decode(file_get_contents('php://input'), true);
+        
+        $nome = $dados['nome'] ?? null;
+        $username = $dados['username'] ?? null;
+        $email = $dados['email'] ?? null;
+        $senha = $dados['senha'] ?? null;   
+        
     }
 
     // TODO: encerrar sessão e redirecionar pro login

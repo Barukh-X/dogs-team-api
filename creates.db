@@ -10,3 +10,4 @@ CREATE TABLE usuarios (
   senha varchar(60),
   isadmin tinyint(1) DEFAULT 0
 );
+

@@ -11,3 +11,7 @@ CREATE TABLE usuarios (
   isadmin tinyint(1) DEFAULT 0
 );
 
+CREATE TABLE materias (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nome_materia varchar(20);
+);

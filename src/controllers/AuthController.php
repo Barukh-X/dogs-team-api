@@ -73,7 +73,7 @@ class AuthController
             http_response_code(500);
             echo json_encode(['erro' => 'Erro ao cadastrar usuário']);
         }
-        } catch (PDOExeption $e) {
+        } catch (PDOException $e) {
             http_response_code(409);
             echo json_encode(['erro' => 'Nome de usuário ou email já cadastrados']);
         }

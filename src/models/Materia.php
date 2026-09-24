@@ -17,7 +17,6 @@ class Materia
         return $materias ?: null;
     }
 
-    // TODO: criar matéria
     public function criar(string $nome_materia): bool
     {
         $stmt = $this->pdo->prepare('INSERT INTO materias (nome_materia) VALUES (:nome_materia)');

@@ -15,16 +15,23 @@ class AuthController
     public function login(): void
     {
         $dados = json_decode(file_get_contents('php://input'), true);
-        $username = $dados['username'] ?? null;
+        
+        if(!is_array($dados)) {
+            http_response_code(400);
+            echo json_encode(['erro' => 'JSON inválido']);
+            return;
+        }
+        
+        $logar = $dados['logar'] ?? null;
         $senha = $dados['senha'] ?? null;
         
-        if(!$username || !$senha) {
+        if(!$logar || !$senha) {
             http_response_code(400);
             echo json_encode(['erro' => 'Usuário e senha são obrigatórios']);
             return;
         }
         
-        $usuario = $this->usuarioModel->buscarPorLogin($username);
+        $usuario = $this->usuarioModel->buscarPorLogin($logar);
         
         if($usuario === null || !password_verify($senha, $usuario['senha'])) {
             http_response_code(401);

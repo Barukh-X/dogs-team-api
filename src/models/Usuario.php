@@ -11,8 +11,8 @@ class Usuario
 
     public function buscarPorLogin(string $login): ?array
     {
-        $stmt = $this->pdo->prepare('SELECT id, senha, isadmin FROM usuarios WHERE usuario = :user');
-        $stmt->execute(['user' => $login]);
+        $stmt = $this->pdo->prepare('SELECT id, senha, isadmin FROM usuarios WHERE usuario = :logar OR email = :logar LIMIT 1');
+        $stmt->execute(['logar' => $login]);
         
         $res_busca = $stmt->fetch(PDO::FETCH_ASSOC);
         

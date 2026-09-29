@@ -1,4 +1,6 @@
-CREATE DATABASE dogs_team_db;
+CREATE DATABASE dogs_team_db
+  CHARACTER SET utf8mb4
+  COLLATE utf8mb4_0900_ai_ci;
 
 USE dogs_team_db;
 
@@ -7,8 +9,8 @@ CREATE TABLE usuarios (
   nome varchar(30) NOT NULL,
   usuario varchar(30) NOT NULL UNIQUE,
   email varchar(50) NOT NULL UNIQUE,
-  senha varchar(60),
-  isadmin tinyint(1) DEFAULT 0
+  senha varchar(60) NOT NULL,
+  isadmin BOOLEAN NOT NULL DEFAULT 0
 );
 
 CREATE TABLE materias (

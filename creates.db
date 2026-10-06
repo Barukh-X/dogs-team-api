@@ -9,7 +9,7 @@ CREATE TABLE usuarios (
   nome varchar(30) NOT NULL,
   usuario varchar(30) NOT NULL UNIQUE,
   email varchar(50) NOT NULL UNIQUE,
-  senha varchar(60) NOT NULL,
+  senha varchar(255) NOT NULL,
   isadmin BOOLEAN NOT NULL DEFAULT 0
 );
 

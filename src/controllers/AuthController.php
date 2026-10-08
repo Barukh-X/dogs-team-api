@@ -1,15 +1,15 @@
 <?php
 
 require_once __DIR__ . '/../config/database.php';
-require_once __DIR__ . '/../models/Usuario.php';
+require_once __DIR__ . '/../services/AuthService.php';
 
 class AuthController
 {
-    private Usuario $usuarioModel;
+    private AuthService $authService;
 
     public function __construct()
     {
-        $this->usuarioModel = new Usuario(ConectarDB());
+        $this->authService = new AuthService(ConectarDB());
     }
 
     public function login(): void
@@ -31,28 +31,17 @@ class AuthController
             return;
         }
         
-        $usuario = $this->usuarioModel->buscarPorLogin($logar);
-        
-        if($usuario === null || !password_verify($senha, $usuario['senha'])) {
+        $token = $this->authService->autenticar($logar, $senha);
+
+        if($token === null) {
             http_response_code(401);
             echo json_encode(['erro' => 'Usuário ou senha inválidos']);
             return;
         }
         
-        if(session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-        
-        session_regenerate_id(true);
-        
-        $_SESSION['id'] = $usuario['id'];
-        $_SESSION['isadmin'] = $usuario['isadmin'];
-        
         header('Content-Type: application/json');
-        
         http_response_code(200);
-        
-        echo json_encode(['sucesso' => 'true']);
+        echo json_encode(['sucesso' => true, 'token' => $token]);
     }
 
     public function cadastrar(): void
@@ -60,7 +49,7 @@ class AuthController
         $dados = json_decode(file_get_contents('php://input'), true);
         
         $nome = $dados['nome'] ?? null;
-        $usuario = $dados['username'] ?? null;
+        $usuario = $dados['usuario'] ?? null;
         $email = $dados['email'] ?? null;
         $senha = $dados['senha'] ?? null;
         
@@ -71,7 +60,7 @@ class AuthController
         }
         
         try {
-            $cadastro = $this->usuarioModel->criar($nome, $usuario, $email, $senha);
+            $cadastro = $this->authService->registrar($nome, $usuario, $email, $senha);
             
         if($cadastro) {
             http_response_code(201);
@@ -89,22 +78,14 @@ class AuthController
 
     public function logout(): void
     {
-        require_once __DIR__ . '/../includes/auth_check.php';
-        
-        $_SESSION = [];
-        
-        session_destroy();
-        
-        header('Content-Type: application/json');
-        echo json_encode(['sucesso' => 'true']);
+        http_response_code(200);
+        echo json_encode(['sucesso' => true]);
     }
 
-    // TODO: gerar token e enviar e-mail de recuperação
     public function recuperarSenha(): void
     {
     }
 
-    // TODO: validar token e salvar nova senha
     public function redefinirSenha(): void
     {
     }

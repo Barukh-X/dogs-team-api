@@ -10,6 +10,7 @@ class MateriaController
 
     public function __construct()
     {
+        exigirAutenticacao();
         $this->materiaModel = new Materia(ConectarDB());
     }
 

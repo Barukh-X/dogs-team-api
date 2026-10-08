@@ -36,6 +36,11 @@ class Router
     {
         $path = parse_url($uri, PHP_URL_PATH);
 
+        $base = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
+        if ($base !== '' && str_starts_with($path, $base)) {
+        $path = substr($path, strlen($base));
+        }
+
         $handler = $this->routes[$method][$path] ?? null;
 
         if ($handler === null) {
@@ -44,22 +49,22 @@ class Router
             header('Content-Type: application/json');
 
             echo json_encode([
-                'erro' => 'Rota não encontrada'
+            'erro' => 'Rota não encontrada'
             ]);
 
-            return;
-        }
+        return;
+    }
 
-        if (is_array($handler)) {
-            [$controller, $action] = $handler;
+    if (is_array($handler)) {
+        [$controller, $action] = $handler;
 
-            $instance = new $controller();
+        $instance = new $controller();
 
-            $instance->$action();
+        $instance->$action();
 
-            return;
-        }
+        return;
+    }
 
-        call_user_func($handler);
+    call_user_func($handler);
     }
 }

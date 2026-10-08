@@ -31,12 +31,10 @@ class Usuario
         ]);
     }
 
-    // TODO: buscar usuário por e-mail (recuperação de senha)
     public function buscarPorEmail(string $email): ?array
     {
     }
 
-    // TODO: atualizar senha (redefinição de senha)
     public function atualizarSenha(int $id, string $novaSenhaHash): bool
     {
     }

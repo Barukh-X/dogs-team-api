@@ -1,4 +1,12 @@
+Options -MultiViews
 RewriteEngine On
+
+# Define a base de reescrita relativa à pasta onde o .htaccess está
+RewriteBase /
+
+# Se não for um arquivo físico existente
 RewriteCond %{REQUEST_FILENAME} !-f
+# E não for um diretório físico existente
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^ index.php [QSA,L]
+# Redireciona tudo para o index.php mantendo a query string
+RewriteRule ^(.*)$ index.php [QSA,L]

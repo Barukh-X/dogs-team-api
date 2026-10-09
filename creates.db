@@ -15,5 +15,5 @@ CREATE TABLE usuarios (
 
 CREATE TABLE materias (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  nome_materia varchar(20);
+  nome_materia varchar(20)
 );

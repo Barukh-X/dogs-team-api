@@ -9,23 +9,62 @@ class DataImportante
         $this->pdo = $pdo;
     }
 
-    // TODO: listar datas importantes de um usuário
-    public function listarPorUsuario(int $usuarioId): array
+    public function listar(): array
     {
+        $stmt = $this->pdo->query('SELECT
+        di.id,
+        di.id_materia,
+        m.nome_materia AS materia,
+        di.titulo,
+        di.descricao,
+        di.data_hora
+        FROM datas_importantes AS di
+        LEFT JOIN materias AS m
+        ON di.id_materia = m.id
+        WHERE di.data_hora >= NOW()
+        ORDER BY di.data_hora ASC');
+        
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // TODO: criar data importante (título, data, matéria opcional)
-    public function criar(int $usuarioId, string $titulo, string $data, ?int $materiaId = null): bool
+    public function criar(string $titulo, string $desc, string $data_hora, ?int $materiaId = null): bool
     {
+        $stmt = $this->pdo->prepare(
+            'INSERT INTO datas_importantes (id_materia, titulo, descricao, data_hora)
+            VALUES (:materiaId, :titulo, :desc, :data_hora)');
+        
+        return $stmt->execute([
+            'materiaId' => $materiaId,
+            'titulo' => $titulo,
+            'desc' => $desc,
+            'data_hora' => $data_hora
+        ]);
     }
 
-    // TODO: editar data importante
-    public function editar(int $id, string $titulo, string $data): bool
+    public function editar(int $id, string $titulo, string $desc, string $data_hora, ?int $materiaId = null): bool
     {
+        $stmt = $this->pdo->prepare(
+            'UPDATE datas_importantes
+             SET id_materia = :materiaId, titulo = :titulo, descricao = :desc, data_hora = :data_hora
+             WHERE id = :id'
+        );
+        $stmt->execute([
+            'materiaId' => $materiaId,
+            'titulo'    => $titulo,
+            'desc'      => $desc,
+            'data_hora' => $data_hora,
+            'id'        => $id
+        ]);
+            
+        return $stmt->rowCount() > 0;
     }
 
-    // TODO: excluir data importante
     public function excluir(int $id): bool
     {
+        $stmt = $this->pdo->prepare('DELETE FROM datas_importantes WHERE id = :id');
+        
+        $stmt->execute(['id' => $id]);
+
+        return $stmt->rowCount() > 0;
     }
 }

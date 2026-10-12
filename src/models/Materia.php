@@ -9,28 +9,33 @@ class Materia
         $this->pdo = $pdo;
     }
 
-    public function listar_materias(): ?array
+    public function listar_materias(): array
     {
         $stmt = $this->pdo->query('SELECT * FROM materias');
-        $materias = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
-        return $materias ?: null;
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function criar(string $nome_materia): bool
     {
         $stmt = $this->pdo->prepare('INSERT INTO materias (nome_materia) VALUES (:nome_materia)');
-        
-        return $stmt->execute([':nome_materia' => $nome_materia]);
+
+        return $stmt->execute(['nome_materia' => $nome_materia]);
     }
 
-    // TODO: editar matéria
-    public function editar(int $id, string $nome): bool
+    public function editar(int $id, string $nome_materia): bool
     {
+        $stmt = $this->pdo->prepare('UPDATE materias SET nome_materia = :nome_materia WHERE id = :id');
+        $stmt->execute(['nome_materia' => $nome_materia, 'id' => $id]);
+
+        return $stmt->rowCount() > 0;
     }
 
-    // TODO: excluir matéria
     public function excluir(int $id): bool
     {
+        $stmt = $this->pdo->prepare('DELETE FROM materias WHERE id = :id');
+        $stmt->execute(['id' => $id]);
+
+        return $stmt->rowCount() > 0;
     }
 }

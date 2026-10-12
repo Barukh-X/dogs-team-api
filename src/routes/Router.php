@@ -34,21 +34,17 @@ class Router
 
     public function dispatch(string $method, string $uri): void
     {
-    // Separa a rota dos parâmetros GET (?id=1...)
+
     $path = parse_url($uri, PHP_URL_PATH);
     
-    // Descobre dinamicamente a pasta onde o index.php está rodando
     $scriptFolder = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/\\');
     
-    // Se estiver rodando em subpasta, remove o nome da pasta do início do $path
     if (!empty($scriptFolder) && str_starts_with($path, $scriptFolder)) {
         $path = substr($path, strlen($scriptFolder));
     }
     
-    // Garante que o caminho sempre comece com '/' e não termine com '/' (exceto se for apenas '/')
     $path = '/' . trim($path, '/');
 
-    // Busca a rota correspondente
     $handler = $this->routes[$method][$path] ?? null;
     
     if ($handler === null) {
@@ -63,14 +59,11 @@ class Router
     if (is_array($handler)) {
         [$controller, $action] = $handler;
         
-        // Correção extra: Você precisa dar 'require' ou usar autoload nos Controllers
-        // Se o seu roteador não faz o include automático, inclua aqui ou use a instância direto
         $instance = new $controller();
         $instance->$action();
         return;
     }
     
-    call_user_func($handler);
-}
-
+        call_user_func($handler);
+    }
 }

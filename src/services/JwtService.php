@@ -8,7 +8,7 @@ class JwtService
   
   public function __construct(?string $secret = null)
   {
-    $this->secret = 'chavetemp';
+    $this->secret = 'chavetemporaria';
   }
   
   public function gerar(array $payload, int $expiraEmSegundos = 3600): string {

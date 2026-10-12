@@ -1,2 +1,2 @@
-# dogs-team-api
+# Dogs-Team-Api
 Uma API

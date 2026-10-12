@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../services/AuthService.php';
+require_once __DIR__ . '/../includes/helpers.php';
 
 class AuthController
 {
@@ -14,79 +15,82 @@ class AuthController
 
     public function login(): void
     {
-        $dados = json_decode(file_get_contents('php://input'), true);
-        
-        if(!is_array($dados)) {
-            http_response_code(400);
-            echo json_encode(['erro' => 'JSON inválido']);
+        $dados = lerJson();
+
+        if ($dados === null) {
+            responderJson(400, ['erro' => 'JSON inválido']);
             return;
         }
-        
+
         $logar = $dados['logar'] ?? null;
         $senha = $dados['senha'] ?? null;
-        
-        if(!$logar || !$senha) {
-            http_response_code(400);
-            echo json_encode(['erro' => 'Usuário e senha são obrigatórios']);
+
+        if (!is_string($logar) || !is_string($senha) || $logar === '' || $senha === '') {
+            responderJson(400, ['erro' => 'Usuário e senha são obrigatórios']);
             return;
         }
-        
+
         $token = $this->authService->autenticar($logar, $senha);
 
-        if($token === null) {
-            http_response_code(401);
-            echo json_encode(['erro' => 'Usuário ou senha inválidos']);
+        if ($token === null) {
+            responderJson(401, ['erro' => 'Usuário ou senha inválidos']);
             return;
         }
-        
-        header('Content-Type: application/json');
-        http_response_code(200);
-        echo json_encode(['sucesso' => true, 'token' => $token]);
+
+        responderJson(200, ['sucesso' => true, 'token' => $token]);
     }
 
     public function cadastrar(): void
     {
-        $dados = json_decode(file_get_contents('php://input'), true);
-        
-        $nome = $dados['nome'] ?? null;
-        $usuario = $dados['usuario'] ?? null;
-        $email = $dados['email'] ?? null;
-        $senha = $dados['senha'] ?? null;
-        
-        if(!$nome || !$usuario || !$email || !$senha) {
-            http_response_code(400);
-            echo json_encode(['erro' => 'Preencha todos os campos']);
+        $dados = lerJson();
+
+        if ($dados === null) {
+            responderJson(400, ['erro' => 'JSON inválido']);
             return;
         }
-        
+
+        $texto = fn(string $campo): string =>
+            is_string($dados[$campo] ?? null) ? trim($dados[$campo]) : '';
+
+        $nome    = $texto('nome');
+        $usuario = $texto('usuario');
+        $email   = $texto('email');
+        $senha   = is_string($dados['senha'] ?? null) ? $dados['senha'] : '';
+
+        if ($nome === '' || $usuario === '' || $email === '' || $senha === '') {
+            responderJson(400, ['erro' => 'Preencha todos os campos corretamente']);
+            return;
+        }
+
+        if (mb_strlen($nome) > 30 || mb_strlen($usuario) > 30 || mb_strlen($email) > 50) {
+            responderJson(400, ['erro' => 'Nome, usuário ou email excedem o tamanho permitido']);
+            return;
+        }
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            responderJson(400, ['erro' => 'Email inválido']);
+            return;
+        }
+
         try {
             $cadastro = $this->authService->registrar($nome, $usuario, $email, $senha);
-            
-        if($cadastro) {
-            http_response_code(201);
-            echo json_encode(['sucesso' => true]);
-        } else {
-            http_response_code(500);
-            echo json_encode(['erro' => 'Erro ao cadastrar usuário']);
-        }
+
+            if ($cadastro) {
+                responderJson(201, ['sucesso' => true]);
+            } else {
+                responderJson(500, ['erro' => 'Erro ao cadastrar usuário']);
+            }
         } catch (PDOException $e) {
-            http_response_code(409);
-            echo json_encode(['erro' => 'Nome de usuário ou email já cadastrados']);
+            if ($e->getCode() === '23000') { // UNIQUE: usuario ou email já existem
+                responderJson(409, ['erro' => 'Nome de usuário ou email já cadastrados']);
+                return;
+            }
+            responderJson(500, ['erro' => 'Erro interno do sistema']);
         }
-        
     }
 
     public function logout(): void
     {
-        http_response_code(200);
-        echo json_encode(['sucesso' => true]);
-    }
-
-    public function recuperarSenha(): void
-    {
-    }
-
-    public function redefinirSenha(): void
-    {
+        responderJson(200, ['sucesso' => true]);
     }
 }

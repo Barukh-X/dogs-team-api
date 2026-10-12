@@ -8,6 +8,13 @@ require_once __DIR__ . '/Router.php';
 
 $router = new Router();
 
+$router->get('/', function () {
+    echo json_encode([
+        'sucesso' => true,
+        'mensagem' => 'API Dogs Team online'
+    ]);
+});
+
 $router->post('/api/login', [AuthController::class, 'login']);
 $router->post('/api/cadastrar', [AuthController::class, 'cadastrar']);
 $router->post('/api/logout', [AuthController::class, 'logout']);

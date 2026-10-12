@@ -12,7 +12,8 @@ function ConectarDB(): PDO
 
     try {
         return new PDO($dsn, $user, $pass, [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::MYSQL_ATTR_FOUND_ROWS => true
         ]);
     } catch (PDOException $e) {
         http_response_code(500);

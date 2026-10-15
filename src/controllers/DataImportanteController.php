@@ -39,7 +39,7 @@ class DataImportanteController
             return null;
         }
         if (isset($d['id_materia']) && $d['id_materia'] !== '') {
-            $materiaId = $this->idValido($d['id_materia']);
+            $materiaId = idValido($d['id_materia']);
             if ($materiaId === null) {
                 responderJson(400, ['erro' => 'id_materia inválido']);
                 return null;
@@ -69,7 +69,7 @@ class DataImportanteController
     {
         exigirAdmin();
 
-        $dados = $this->lerJson();
+        $dados = lerJson();
         if ($dados === null) {
             responderJson(400, ['erro' => 'JSON inválido']);
             return;
@@ -94,8 +94,8 @@ class DataImportanteController
     {
         exigirAdmin();
 
-        $dados = $this->lerJson();
-        $id = $dados !== null ? $this->idValido($dados['id'] ?? null) : null;
+        $dados = lerJson();
+        $id = $dados !== null ? idValido($dados['id'] ?? null) : null;
 
         if ($id === null) {
             responderJson(400, ['erro' => 'ID inválido']);
@@ -124,8 +124,8 @@ class DataImportanteController
     {
         exigirAdmin();
 
-        $dados = $this->lerJson();
-        $id = $dados !== null ? $this->idValido($dados['id'] ?? null) : null;
+        $dados = lerJson();
+        $id = $dados !== null ? idValido($dados['id'] ?? null) : null;
 
         if ($id === null) {
             responderJson(400, ['erro' => 'ID inválido']);

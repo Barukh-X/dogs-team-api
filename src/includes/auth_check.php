@@ -31,7 +31,7 @@ function exigirAutenticacao(): void
     if ($payload === null) {
         http_response_code(401);
         header('Content-Type: application/json; charset=utf-8');
-        echo json_encode(['sucesso' => false, 'mensagem' => 'Token inválido ou expirado']);
+        echo json_encode(['sucesso' => false, 'erro' => 'Token inválido ou expirado']);
         exit;
     }
 

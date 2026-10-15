@@ -20,6 +20,7 @@ $router->post('/api/cadastrar', [AuthController::class, 'cadastrar']);
 $router->post('/api/logout', [AuthController::class, 'logout']);
 
 $router->get('/api/materias', [MateriaController::class, 'listar']);
+$router->get('/api/materias/detalhes', [MateriaController::class, 'detalhes']);
 $router->post('/api/materias', [MateriaController::class, 'criar']);
 $router->put('/api/materias', [MateriaController::class, 'editar']);
 $router->delete('/api/materias', [MateriaController::class, 'excluir']);

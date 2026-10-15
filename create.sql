@@ -27,3 +27,25 @@ CREATE TABLE datas_importantes (
   
   FOREIGN KEY (id_materia) REFERENCES materias(id)
 );
+CREATE TABLE anotacoes (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  id_usuario INT NOT NULL,
+  id_materia INT NOT NULL,
+  titulo VARCHAR(100) NOT NULL,
+  descricao_anot MEDIUMTEXT,
+  publica BOOLEAN NOT NULL DEFAULT 0,
+
+  FOREIGN KEY (id_usuario) REFERENCES usuarios(id)
+    ON DELETE CASCADE,
+  FOREIGN KEY (id_materia) REFERENCES materias(id)
+);
+
+CREATE TABLE anotacao_links (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  id_anotacao INT NOT NULL,
+  url VARCHAR(500) NOT NULL,
+  titulo VARCHAR(100),
+
+  FOREIGN KEY (id_anotacao) REFERENCES anotacoes(id)
+    ON DELETE CASCADE
+);

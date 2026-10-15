@@ -81,7 +81,7 @@ class AuthController
                 responderJson(500, ['erro' => 'Erro ao cadastrar usuário']);
             }
         } catch (PDOException $e) {
-            if ($e->getCode() === '23000') { // UNIQUE: usuario ou email já existem
+            if ($e->getCode() === '23000') {
                 responderJson(409, ['erro' => 'Nome de usuário ou email já cadastrados']);
                 return;
             }
